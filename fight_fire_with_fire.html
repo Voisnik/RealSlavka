@@ -1,0 +1,142 @@
+<html>
+<head>
+    <title>Real Slavka - Inner World - Fight Fire With Fire</title>
+    <link rel="icon" href="./assets/images/favicon.ico">
+    <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body>
+    <section id="image-post">
+        <div class="image">
+            <img src="./assets/images/Bamburec_whole-PNG.png" id="main-image">
+            <!-- Tooltip Div -->
+            <div id="tooltip" class="tooltip-area"></div>
+        </div>
+    </section>
+
+    <script>
+        const tooltip = document.getElementById('tooltip');
+        const image = document.getElementById('main-image');
+        let clickableArea = null;
+
+        // Define areas as polygons with their corresponding text
+        const areas = [
+            {
+                name: "Horns",
+                coords: [690,484,785,576,860,555,913,465,983,410,1107,420,1193,509,1314,505,1326,390,1407,389,1471,438,1407,518,1277,617,1133,618,1087,648,1070,610,989,610,939,631,828,677,701,647,655,516],
+                text: "From unknown times till the present days"
+            },
+            {
+                name: "Right Palm",
+                coords: [720,866,639,928,655,1048,713,1138,851,1124,946,1081,951,1035,842,1025,842,906,791,855],
+                text: "Map of Ratevo"
+            },
+            {
+                name: "Right Hand",
+                coords: [607,947,504,1095,481,1235,531,1341,619,1380,759,1311,830,1170,679,1171,605,1005],
+                text: "In the hearth of Maleshevo Mountain, in the Ratevo village"
+            },
+            {
+                name: "Head",
+                coords: [1098,671,794,706,775,802,889,947,987,1024,1140,1030,1287,938,1216,717,1167,684],
+                text: "Every year, on the 20th of January, on the Epiphany celebration day at midnight"
+            },
+            {
+                name: "Left Hand",
+                coords: [1194,1011,1326,940,1416,989,1497,1182,1480,1332,1342,1530,1243,1466,1119,1495,1066,1406,1126,1260,1220,1242,1269,1118],
+                text: "Holding torches, black paint and making loud bell noises"
+            },
+            {
+                name: "Body",
+                coords: [994,1044,1179,1055,1216,1111,1215,1200,1109,1239,1056,1355,1066,1481,891,1509,718,1475,775,1339,881,1180],
+                text: "Scary cretures roam on the small streets"
+            },
+            {
+                name: "Bells",
+                coords: [1225,1545,803,1553,674,1560,639,1659,680,1823,773,1899,992,1863,1197,1839,1321,1803,1367,1694,1358,1571],
+                text: "Ringing bells sound"
+            },
+            {
+                name: "Right Leg",
+                coords: [639,1890,967,1943,989,2406,750,2371,637,2044,625,1961],
+                text: "To chase demons and evil spirits"
+            },
+            {
+                name: "Left Leg",
+                coords: [1050,1943,1358,1845,1322,2166,1308,2355,1070,2382],
+                text: "And save people and cattle from curses and illnesses"
+            },
+            {
+                name: "Hooves",
+                coords: [734,2413,695,2572,1010,2555,1326,2555,1308,2389,1026,2435,847,2413],
+                text: "But who are they?"
+            }
+        ];
+
+        function pointInPolygon(x, y, polygonCoords) {
+            let isInside = false;
+            for (let i = 0, j = polygonCoords.length - 2; i < polygonCoords.length; i += 2) {
+                let xi = polygonCoords[i], yi = polygonCoords[i + 1];
+                let xj = polygonCoords[j], yj = polygonCoords[j + 1];
+                let intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+                if (intersect) isInside = !isInside;
+                j = i;
+            }
+            return isInside;
+        }
+
+        image.addEventListener('mousemove', (event) => {
+            const rect = image.getBoundingClientRect();
+            const scaleX = image.naturalWidth / rect.width;
+            const scaleY = image.naturalHeight / rect.height;
+
+            const mouseX = (event.clientX - rect.left) * scaleX;
+            const mouseY = (event.clientY - rect.top) * scaleY;
+
+            let found = false;
+            clickableArea = null;
+
+            areas.forEach(area => {
+                if (pointInPolygon(mouseX, mouseY, area.coords)) {
+                    tooltip.innerHTML = area.text;
+                    tooltip.style.opacity = '1';
+                    tooltip.style.visibility = 'visible';
+                    tooltip.style.left = `${event.pageX + 10}px`;
+                    tooltip.style.top = `${event.pageY + 10}px`;
+                    found = true;
+
+                    // Make the "Hooves" and "Right Palm" areas clickable and change cursor to pointer
+                    if (area.name === "Hooves" || area.name === "Right Palm") {
+                        clickableArea = area;
+                        image.style.cursor = 'pointer';
+                    } else {
+                        image.style.cursor = 'default'; // Reset the cursor for other areas
+                    }
+                }
+            });
+
+            if (!found) {
+                tooltip.style.opacity = '0';
+                tooltip.style.visibility = 'hidden';
+                image.style.cursor = 'default'; // Reset the cursor if no area is found
+            }
+        });
+
+        image.addEventListener('mouseout', () => {
+            tooltip.style.opacity = '0';
+            tooltip.style.visibility = 'hidden';
+            image.style.cursor = 'default'; // Reset the cursor when leaving the image
+        });
+
+        image.addEventListener('click', () => {
+            // Redirect to links if the "Hooves" or "Right Palm" areas are clicked
+            if (clickableArea) {
+                if (clickableArea.name === "Hooves") {
+                    window.location.href = "http://www.bamburcivideo.com";
+                } else if (clickableArea.name === "Right Palm") {
+                    window.location.href = "https://www.google.com/maps/place/%D0%A0%D0%B0%D1%82%D0%B5%D0%B2%D0%BE/@41.6739008,22.8467989,1584m/data=!3m2!1e3!4b1!4m6!3m5!1s0x14aa119b7e87a1fb:0xc6007d304c40cc46!8m2!3d41.672071!4d22.8537484!16s%2Fm%2F010f5vj7?entry=ttu&g_ep=EgoyMDI0MTAwMi4xIKXMDSoASAFQAw%3D%3D";
+                }
+            }
+        });
+    </script>
+</body>
+</html>
